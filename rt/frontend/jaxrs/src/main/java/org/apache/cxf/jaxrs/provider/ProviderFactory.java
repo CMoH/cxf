@@ -969,11 +969,13 @@ public abstract class ProviderFactory {
                 }
             }
         }
-        Type[] types = cls.getGenericInterfaces();
-        if (types.length > 0) {
-            return types;
-        }
-        return getGenericInterfaces(cls.getSuperclass(), expectedClass);
+        // append arrays without ArrayUtils or such...
+        Type[] classTypes = cls.getGenericInterfaces();
+        Type[] superTypes = getGenericInterfaces(cls.getSuperclass(), expectedClass);
+        Type[] allTypes = new Type[classTypes.length + superTypes.length];
+        System.arraycopy(classTypes, 0, allTypes, 0, classTypes.length);
+        System.arraycopy(superTypes, 0, allTypes, classTypes.length, superTypes.length);
+        return allTypes;
     }
     
     protected static class AbstractPriorityComparator {
